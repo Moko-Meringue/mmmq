@@ -3,13 +3,13 @@ package org.mmmq.core;
 import java.io.IOException;
 import java.net.InetAddress;
 
-public class Consumer {
+public class Host {
 
-    private final InetAddress host;
+    private final InetAddress address;
 
-    public Consumer(InetAddress host) throws IOException {
-        validateHost(host);
-        this.host = host;
+    public Host(InetAddress address) throws IOException {
+        validateHost(address);
+        this.address = address;
     }
 
     private void validateHost(InetAddress host) throws IOException {
@@ -20,7 +20,7 @@ public class Consumer {
 
     boolean healthCheck() {
         try {
-            return host.isReachable(5000);
+            return address.isReachable(5000);
         } catch (Exception ignored) {
             return false;
         }
