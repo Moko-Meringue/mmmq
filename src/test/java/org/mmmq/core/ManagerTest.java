@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,7 +84,6 @@ public class ManagerTest {
                 .post("/subscribers")
                 .then().log().all()
                 .statusCode(200);
-
 
         assertThat(broker.subscribers).contains(subscriber);
     }

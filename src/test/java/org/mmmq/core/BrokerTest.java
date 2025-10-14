@@ -8,7 +8,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mmmq.core.HostTest.LOCALHOST;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BrokerTest {
 

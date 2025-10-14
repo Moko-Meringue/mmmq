@@ -5,11 +5,11 @@ public record SubscriberRegistrationTemplate(
         String host
 ) {
 
-    public SubscriberRegistrationTemplate{
-        if(name == null){
+    public SubscriberRegistrationTemplate {
+        if (name == null) {
             throw new IllegalArgumentException("name is null");
         }
-        if(host == null){
+        if (host == null) {
             throw new IllegalArgumentException("host is null");
         }
     }

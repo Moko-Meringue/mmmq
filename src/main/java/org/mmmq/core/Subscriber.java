@@ -11,7 +11,7 @@ public class Subscriber {
     private final Set<String> subscribed = new HashSet<>();
     private final Queue<Message> messageQueue = new LinkedList<>();
 
-    public Subscriber(String name, String host)  {
+    public Subscriber(String name, String host) {
         try {
             this.name = name;
             this.host = new Host(Inet4Address.getByName(host));
@@ -49,7 +49,7 @@ public class Subscriber {
     public boolean equals(Object o) {
         if (!(o instanceof Subscriber that)) {
             return false;
-            }
+        }
         return Objects.equals(name, that.name) && Objects.equals(host, that.host);
     }
 
