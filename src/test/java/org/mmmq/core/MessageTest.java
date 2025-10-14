@@ -14,7 +14,7 @@ public class MessageTest {
     void hasDataTest() {
         Message message = new Message("moko", Map.of("key1", "value"));
 
-        assertThat(message.getContent())
+        assertThat(message.content())
                 .containsExactlyEntriesOf(Map.of("key1", "value"));
     }
 }

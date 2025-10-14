@@ -1,15 +1,18 @@
 package org.mmmq.core;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class Broker {
 
-    private final List<Subscriber> subscribers = new ArrayList<>();
+    final List<Subscriber> subscribers = new ArrayList<>();
 
     public void push(Message message) {
         subscribers.stream()
-                .filter(subscriber -> subscriber.isSubscribing(message.getTopic()))
+                .filter(subscriber -> subscriber.isSubscribing(message.topic()))
                 .forEach(subscriber -> subscriber.push(message));
     }
 

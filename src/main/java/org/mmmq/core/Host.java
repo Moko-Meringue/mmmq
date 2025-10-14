@@ -2,10 +2,11 @@ package org.mmmq.core;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Objects;
 
 public class Host {
 
-    private final InetAddress address;
+    final InetAddress address;
 
     public Host(InetAddress address) throws IOException {
         validateHost(address);
@@ -32,5 +33,18 @@ public class Host {
         } catch (Exception ignored) {
             return false;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Host host)) {
+            return false;
+        }
+        return Objects.equals(address, host.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(address);
     }
 }

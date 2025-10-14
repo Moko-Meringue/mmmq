@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HostTest {
 
-    static Host LOCALHOST;
+    public static Host LOCALHOST;
 
     static {
         try {

@@ -2,21 +2,17 @@ package org.mmmq.core;
 
 import java.util.Map;
 
-public class Message {
+public record Message(
+        String topic,
+        Map<String, Object> content
+) {
 
-    private final String topic;
-    private final Map<String, Object> content;
-
-    public Message(String topic, Map<String, Object> content) {
-        this.topic = topic;
-        this.content = content;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    Map<String, Object> getContent() {
-        return content;
+    public Message {
+        if (topic == null) {
+            throw new IllegalArgumentException("topic is null");
+        }
+        if (content == null) {
+            throw new IllegalArgumentException("content is null");
+        }
     }
 }
