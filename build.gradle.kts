@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.5.6"
+	id("org.springframework.boot") version "3.5.6" apply(false)
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -16,6 +16,13 @@ java {
 
 repositories {
 	mavenCentral()
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
 }
 
 dependencies {
