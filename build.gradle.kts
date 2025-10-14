@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.0"
 description = "mmmq"
 
 java {
