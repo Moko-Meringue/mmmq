@@ -6,10 +6,10 @@ import java.util.*;
 
 public class Subscriber {
 
-    private final String name;
-    private final Host host;
-    private final Set<String> subscribed = new HashSet<>();
-    private final Queue<Message> messageQueue = new LinkedList<>();
+    final String name;
+    final Host host;
+    final Set<String> subscribed = new HashSet<>();
+    final Queue<Message> messageQueue = new LinkedList<>();
 
     public Subscriber(String name, String host) {
         try {

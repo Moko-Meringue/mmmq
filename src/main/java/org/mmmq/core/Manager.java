@@ -1,6 +1,7 @@
 package org.mmmq.core;
 
 import org.mmmq.core.template.SubscriberRegistrationTemplate;
+import org.mmmq.core.template.TopicSubscriptionTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +31,15 @@ public class Manager {
     public ResponseEntity<Void> deleteSubscriber(@PathVariable(name = "name") String name) {
         broker.unlink(name);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/subscribers/{name}/subscriptions")
+    public ResponseEntity<Void> subscribeTopic(
+            @PathVariable(name = "name") String name,
+            @RequestBody TopicSubscriptionTemplate template
+    ) {
+        Subscriber subscriber = broker.findSubscriber(name);
+        subscriber.subscribe(template.topic());
+        return ResponseEntity.ok().build();
     }
 }

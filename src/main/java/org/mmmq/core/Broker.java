@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class Broker {
+class Broker {
 
     final List<Subscriber> subscribers = new ArrayList<>();
 
-    public void push(Message message) {
+    void push(Message message) {
         subscribers.stream()
                 .filter(subscriber -> subscriber.isSubscribing(message.topic()))
                 .forEach(subscriber -> subscriber.push(message));
@@ -21,12 +21,12 @@ public class Broker {
         subscribers.add(subscriber);
     }
 
-    public void unlink(String name) {
+    void unlink(String name) {
         Subscriber subscriber = findSubscriber(name);
         subscribers.remove(subscriber);
     }
 
-    private Subscriber findSubscriber(String name) {
+    Subscriber findSubscriber(String name) {
         return subscribers.stream()
                 .filter(sub -> Objects.equals(sub.getName(), name))
                 .findAny()

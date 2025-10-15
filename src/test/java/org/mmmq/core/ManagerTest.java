@@ -3,11 +3,14 @@ package org.mmmq.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mmmq.config.TestConfiguration;
 import org.mmmq.core.template.SubscriberRegistrationTemplate;
+import org.mmmq.core.template.TopicSubscriptionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -23,7 +26,7 @@ import static org.mockito.Mockito.verify;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = TestConfiguration.class
 )
-public class ManagerTest {
+class ManagerTest {
 
     @LocalServerPort
     int port;
@@ -34,9 +37,17 @@ public class ManagerTest {
     @Autowired
     Manager manager;
 
+    Subscriber subscriber = new Subscriber("new_subscriber", LOCALHOST);
+
     @BeforeEach
     void setup() {
         RestAssured.port = port;
+    }
+
+    @AfterEach
+    void clean() {
+        Broker broker = manager.broker;
+        broker.subscribers.clear();
     }
 
     @Test
@@ -67,14 +78,11 @@ public class ManagerTest {
     @Test
     @DisplayName("Manager는 외부로부터 Subscriber를 등록할 수 있다.")
     void registerSubscriberTest() throws JsonProcessingException {
-        String name = "new subscriber";
-        Host host = LOCALHOST;
         Broker broker = manager.broker;
-        Subscriber subscriber = new Subscriber(name, LOCALHOST);
 
         SubscriberRegistrationTemplate template = new SubscriberRegistrationTemplate(
-                name,
-                host.address.getHostAddress()
+                subscriber.name,
+                subscriber.host.address.getHostAddress()
         );
 
         RestAssured.given().log().all()
@@ -91,14 +99,12 @@ public class ManagerTest {
     @Test
     @DisplayName("Manager는 외부로부터 Subscriber를 삭제할 수 있다.")
     void deleteSubscriberTest() {
-        String name = "new subscriber";
         Broker broker = manager.broker;
-        Subscriber subscriber = new Subscriber(name, LOCALHOST);
         broker.link(subscriber);
 
         RestAssured.given().log().all()
                 .when().log().all()
-                .pathParam("name", name)
+                .pathParam("name", subscriber.name)
                 .delete("/subscribers/{name}")
                 .then().log().all()
                 .statusCode(204);
@@ -108,7 +114,22 @@ public class ManagerTest {
 
     @Test
     @DisplayName("Manager는 Subscriber가 특정 Topic을 구독하도록 할 수 있다.")
-    void test() {
+    void subscribeTopicTest() throws JsonProcessingException {
+        Broker broker = manager.broker;
+        broker.link(subscriber);
+        String topic = "topic";
 
+        TopicSubscriptionTemplate template = new TopicSubscriptionTemplate(subscriber.name, topic);
+
+        RestAssured.given().log().all()
+                .when().log().all()
+                .pathParam("name", subscriber.name)
+                .body(objectMapper.writeValueAsString(template))
+                .contentType(ContentType.JSON)
+                .post("/subscribers/{name}/subscriptions")
+                .then().log().all()
+                .statusCode(200);
+
+        assertThat(subscriber.subscribed).contains(topic);
     }
 }
