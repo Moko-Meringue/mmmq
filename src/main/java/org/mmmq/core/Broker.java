@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class Broker {
@@ -18,5 +19,17 @@ public class Broker {
 
     void link(Subscriber subscriber) {
         subscribers.add(subscriber);
+    }
+
+    public void unlink(String name) {
+        Subscriber subscriber = findSubscriber(name);
+        subscribers.remove(subscriber);
+    }
+
+    private Subscriber findSubscriber(String name) {
+        return subscribers.stream()
+                .filter(sub -> Objects.equals(sub.getName(), name))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("No such subscriber with name: " + name));
     }
 }

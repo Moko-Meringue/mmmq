@@ -88,10 +88,27 @@ public class ManagerTest {
         assertThat(broker.subscribers).contains(subscriber);
     }
 
-//
-//    @Test
-//    @DisplayName("Manager는 외부로부터 Subscriber를 삭제할 수 있다.")
-//    void test() {
-//
-//    }
+    @Test
+    @DisplayName("Manager는 외부로부터 Subscriber를 삭제할 수 있다.")
+    void deleteSubscriberTest() {
+        String name = "new subscriber";
+        Broker broker = manager.broker;
+        Subscriber subscriber = new Subscriber(name, LOCALHOST);
+        broker.link(subscriber);
+
+        RestAssured.given().log().all()
+                .when().log().all()
+                .pathParam("name", name)
+                .delete("/subscribers/{name}")
+                .then().log().all()
+                .statusCode(204);
+
+        assertThat(broker.subscribers).doesNotContain(subscriber);
+    }
+
+    @Test
+    @DisplayName("Manager는 Subscriber가 특정 Topic을 구독하도록 할 수 있다.")
+    void test() {
+
+    }
 }

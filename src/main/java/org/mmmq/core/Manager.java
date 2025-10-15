@@ -2,9 +2,7 @@ package org.mmmq.core;
 
 import org.mmmq.core.template.SubscriberRegistrationTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Manager {
@@ -26,5 +24,11 @@ public class Manager {
         Subscriber subscriber = new Subscriber(template.name(), template.host());
         broker.link(subscriber);
         return ResponseEntity.ok(subscriber.getName());
+    }
+
+    @DeleteMapping("/subscribers/{name}")
+    public ResponseEntity<Void> deleteSubscriber(@PathVariable(name = "name") String name) {
+        broker.unlink(name);
+        return ResponseEntity.noContent().build();
     }
 }
