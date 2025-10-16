@@ -45,6 +45,10 @@ public class Subscriber {
         return subscribed.contains(topic);
     }
 
+    public Message poll() {
+        return messageQueue.poll();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Subscriber that)) {
