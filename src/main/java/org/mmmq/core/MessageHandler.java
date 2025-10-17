@@ -2,6 +2,7 @@ package org.mmmq.core;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -16,10 +17,12 @@ public class MessageHandler {
     }
 
     public static URI convertToUri(InetAddress address, String path) {
-        String host = address.getHostAddress();
-        String uriString = String.format("https://%s%s", host, path);
-
-        return URI.create(uriString);
+        return UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host(address.getHostAddress())
+                .path(path)
+                .build()
+                .toUri();
     }
 
     public void handle(Host host, Message message) {
