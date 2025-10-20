@@ -8,11 +8,11 @@ import java.net.InetAddress;
 import java.net.URI;
 
 @Component
-public class MessageHandler {
+public class MessageSender {
 
     final RestClient restClient;
 
-    public MessageHandler(RestClient restClient) {
+    public MessageSender(RestClient restClient) {
         this.restClient = restClient;
     }
 
@@ -25,7 +25,7 @@ public class MessageHandler {
                 .toUri();
     }
 
-    public void handle(Host host, Message message) {
+    public void send(Host host, Message message) {
         restClient.post()
                 .uri(convertToUri(host.address, "/messages"))
                 .body(message)

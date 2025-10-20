@@ -20,7 +20,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestConfiguration.class
 )
-class MessageHandlerTest {
+class MessageSenderTest {
 
     @Autowired
     RestClient mockServerClient;
@@ -31,15 +31,16 @@ class MessageHandlerTest {
     @Test
     @DisplayName("특정 host에게 메시지를 전달할 수 있다.")
     void sendMessageTest() {
-        MessageHandler messageHandler = new MessageHandler(mockServerClient);
+        MessageSender messageSender = new MessageSender(mockServerClient);
         Host host = LOCALHOST;
 
-        server.expect(ExpectedCount.once(), requestTo(MessageHandler.convertToUri(LOCALHOST.address, "/messages")))
+        server.expect(ExpectedCount.once(), requestTo(MessageSender.convertToUri(LOCALHOST.address, "/messages")))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess());
 
-        messageHandler.handle(host, new Message("topic", Map.of("key", "value")));
+        messageSender.send(host, new Message("topic", Map.of("key", "value")));
 
         server.verify();
     }
+
 }
