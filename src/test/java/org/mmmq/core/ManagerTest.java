@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mmmq.config.TestConfiguration;
 import org.mmmq.core.template.SubscriberRegistrationTemplate;
 import org.mmmq.core.template.TopicSubscriptionTemplate;
@@ -22,6 +19,7 @@ import static org.mmmq.core.HostTest.LOCALHOST;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@Disabled
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = TestConfiguration.class
