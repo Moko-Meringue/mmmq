@@ -1,4 +1,4 @@
-package org.mmmq.core;
+package org.mmmq.core.subscriber;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,15 +19,7 @@ public class Host {
         }
     }
 
-    boolean healthCheck() {
-        try {
-            return address.isReachable(5000);
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    boolean healthCheck(InetAddress host) {
+    public boolean healthCheck(InetAddress host) {
         try {
             return host.isReachable(5000);
         } catch (Exception ignored) {

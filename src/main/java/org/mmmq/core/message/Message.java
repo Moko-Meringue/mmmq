@@ -1,4 +1,4 @@
-package org.mmmq.core;
+package org.mmmq.core.message;
 
 import java.util.Map;
 
