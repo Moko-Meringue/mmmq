@@ -1,6 +1,7 @@
 package org.mmmq.core.subscriber;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -12,40 +13,45 @@ import org.mmmq.core.message.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.annotation.PostConstruct;
+
 public class Subscriber {
 
     private static final Logger log = LoggerFactory.getLogger(Subscriber.class);
+    static final int MAX_RETRY_COUNT = 3;
 
     final String name;
     final Host host;
     final Set<Topic> topics;
-    final LinkedBlockingQueue<Message> messageQueue;
+    final LinkedBlockingQueue<Map.Entry<Message, Integer>> messageQueue;
     final MessageSender messageSender;
     final ThreadPoolExecutor threadPoolExecutor;
-    final Thread thread;
+    final Thread worker;
 
     public Subscriber(
         String name,
         Host host,
         Set<Topic> topics,
-        LinkedBlockingQueue<Message> messageQueue,
         ThreadPoolExecutor threadPoolExecutor
     ) {
         this.name = name;
         this.host = host;
         this.topics = topics;
-        this.messageQueue = messageQueue;
+        this.messageQueue = new LinkedBlockingQueue<>();
         this.threadPoolExecutor = threadPoolExecutor;
         this.messageSender = MessageSenderFactory.create(host);
-        thread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
+        this.worker = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted() && !threadPoolExecutor.isShutdown()) {
                 try {
-                    if (threadPoolExecutor.isShutdown()) {
-                        break;
+                    Map.Entry<Message, Integer> messageEntry = messageQueue.take();
+                    if(messageEntry.getValue() > MAX_RETRY_COUNT) {
+                        continue;
                     }
-                    Message message = messageQueue.take();
                     threadPoolExecutor.submit(() -> {
-                        messageSender.send(message);
+                        Message message = messageEntry.getKey();
+                        if(!messageSender.send(message).isAck()) {
+                            messageQueue.add(Map.entry(message, messageEntry.getValue() + 1));
+                        }
                     });
                 } catch (Exception e) {
                     log.warn("Failed to send message: {}", e.getMessage());
@@ -54,8 +60,13 @@ public class Subscriber {
         });
     }
 
+    @PostConstruct
+    public void startWorker() {
+        this.worker.start();
+    }
+
     public void push(Message message) {
-        messageQueue.add(message);
+        messageQueue.add(Map.entry(message, 0));
     }
 
     public boolean isSubscribing(String topic) {
@@ -116,7 +127,6 @@ public class Subscriber {
                 name,
                 host,
                 subscribed,
-                new LinkedBlockingQueue<>(),
                 threadPoolExecutor
             );
         }

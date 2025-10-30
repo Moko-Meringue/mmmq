@@ -1,7 +1,12 @@
 package org.mmmq.core.subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -30,11 +35,11 @@ class SubscriberTest {
         Message message = new Message("test", Map.of("key", "value"));
         subscriber.push(message);
 
-        assertThat(subscriber.messageQueue).contains(message);
+        assertThat(subscriber.messageQueue).contains(Map.entry(message, 0));
     }
 
     @Test
-    @DisplayName("push 동시성 보장 테스")
+    @DisplayName("push 동시성 보장 테스트")
     void pushConcurrencyTest() throws InterruptedException {
         int threadCount = 100;
         int messagesPerThread = 10;
@@ -58,7 +63,7 @@ class SubscriberTest {
                 }
             });
         }
-        
+
         startLatch.countDown();
         endLatch.await();
         executor.shutdown();
@@ -67,6 +72,40 @@ class SubscriberTest {
         int actualCount = subscriber.messageQueue.size();
 
         assertThat(actualCount).isEqualTo(expectedCount);
+    }
+
+    @Test
+    @DisplayName("ACK가 오면 메시지를 재전송하지 않는다.")
+    void ackTest() throws Exception {
+        subscriber.startWorker();
+        MessageSender messageSender = mock(MessageSender.class);
+        Message message = new Message("test", Map.of("key", "value"));
+        when(messageSender.send(message)).thenReturn(new SubscriberResponse(Acknowledgement.ACK));
+        Field filed = Subscriber.class.getDeclaredField("messageSender");
+        filed.setAccessible(true);
+        filed.set(subscriber, messageSender);
+
+        subscriber.push(message);
+
+        Thread.sleep(500L);
+        verify(messageSender, times(1)).send(message);
+    }
+
+    @Test
+    @DisplayName("NAK가 오면 메시지를 3회 재전송한다.")
+    void nakTest() throws Exception {
+        subscriber.startWorker();
+        MessageSender messageSender = mock(MessageSender.class);
+        Message message = new Message("test", Map.of("key", "value"));
+        when(messageSender.send(message)).thenReturn(new SubscriberResponse(Acknowledgement.NAK));
+        Field filed = Subscriber.class.getDeclaredField("messageSender");
+        filed.setAccessible(true);
+        filed.set(subscriber, messageSender);
+
+        subscriber.push(message);
+
+        Thread.sleep(1000L);
+        verify(messageSender, times(1 + Subscriber.MAX_RETRY_COUNT)).send(message);
     }
 
     @Test
