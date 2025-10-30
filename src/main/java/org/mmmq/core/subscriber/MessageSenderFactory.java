@@ -1,6 +1,5 @@
 package org.mmmq.core.subscriber;
 
-import java.net.InetAddress;
 import java.net.URI;
 
 import org.springframework.web.client.RestClient;
@@ -14,7 +13,7 @@ public class MessageSenderFactory {
 
     private static RestClient createRestClient(Host host) {
         return RestClient.builder()
-            .baseUrl(convertToUri(host.address))
+            .baseUrl(convertToUri(host))
             .defaultStatusHandler(
                 status -> status.is4xxClientError() || status.is5xxServerError(),
                 (request, response) -> {
@@ -27,10 +26,11 @@ public class MessageSenderFactory {
             .build();
     }
 
-    private static URI convertToUri(InetAddress address) {
+    private static URI convertToUri(Host host) {
         return UriComponentsBuilder.newInstance()
             .scheme("https")
-            .host(address.getHostAddress())
+            .host(host.address.getHostAddress())
+            .port(host.port)
             .build()
             .toUri();
     }

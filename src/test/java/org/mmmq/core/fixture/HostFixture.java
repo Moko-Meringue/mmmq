@@ -8,7 +8,7 @@ public class HostFixture {
 
     public static Host localhost() {
         try {
-            return new Host(InetAddress.getLocalHost()) {
+            return new Host("localhost", 8080) {
                 @Override
                 public boolean healthCheck(InetAddress host) {
                     return true;

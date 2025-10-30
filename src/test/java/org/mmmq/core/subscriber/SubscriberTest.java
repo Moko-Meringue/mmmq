@@ -16,7 +16,6 @@ import java.util.concurrent.Executors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mmmq.core.fixture.HostFixture;
 import org.mmmq.core.message.Message;
 import org.mmmq.core.message.Topic;
 
@@ -26,7 +25,7 @@ class SubscriberTest {
 
     @BeforeEach
     void setUp() {
-        subscriber = new Subscriber.Builder("name", HostFixture.localhost()).build();
+        subscriber = new Subscriber.Builder("name", "localhost", 8080).build();
     }
 
     @Test

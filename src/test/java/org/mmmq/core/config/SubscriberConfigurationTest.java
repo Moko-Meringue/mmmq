@@ -7,7 +7,6 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mmmq.core.TestConfiguration;
-import org.mmmq.core.fixture.HostFixture;
 import org.mmmq.core.subscriber.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +36,7 @@ public class SubscriberConfigurationTest {
 
         @Bean("testSubscriber")
         public Subscriber subscriber() {
-            return new Subscriber.Builder("name", HostFixture.localhost())
+            return new Subscriber.Builder("name", "localhost", 8080)
                 .subscribes("topic1", "topic2")
                 .build();
         }

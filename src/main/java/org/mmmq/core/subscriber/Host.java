@@ -1,21 +1,28 @@
 package org.mmmq.core.subscriber;
 
-import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Objects;
 
 public class Host {
 
     final InetAddress address;
+    final int port;
 
-    public Host(InetAddress address) throws IOException {
-        validateHost(address);
-        this.address = address;
+    public Host(String address, int port) {
+        this.address = convertAddress(address);
+        this.port = port;
     }
 
-    private void validateHost(InetAddress host) throws IOException {
-        if (!healthCheck(host)) {
-            throw new IOException("Host is not reachable: " + host.getHostAddress());
+    private InetAddress convertAddress(String address) {
+        try {
+            InetAddress inetAddress = InetAddress.getByName(address);
+            if (!healthCheck(inetAddress)) {
+                throw new IllegalArgumentException("Host is not reachable: " + inetAddress);
+            }
+            return inetAddress;
+        } catch (UnknownHostException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
