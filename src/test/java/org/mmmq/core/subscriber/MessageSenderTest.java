@@ -5,7 +5,6 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.net.InetAddress;
 import java.net.URI;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ class MessageSenderTest {
         objectMapper = new ObjectMapper();
         host = HostFixture.localhost();
         RestClient tempClient = RestClient.builder()
-            .baseUrl(convertToUri(host.address))
+            .baseUrl(convertToUri(host))
             .defaultStatusHandler(
                 status -> status.is4xxClientError() || status.is5xxServerError(),
                 (request, response) -> {
@@ -59,7 +58,7 @@ class MessageSenderTest {
         MessageSender messageSender = new MessageSender(restClient);
         Host host = HostFixture.localhost();
 
-        server.expect(ExpectedCount.once(), requestTo(convertToUri(host.address) + "/messages"))
+        server.expect(ExpectedCount.once(), requestTo(convertToUri(host) + "/messages"))
             .andExpect(method(HttpMethod.POST))
             .andRespond(withSuccess());
 
@@ -73,7 +72,7 @@ class MessageSenderTest {
     void receiveResponseTest() throws JsonProcessingException {
         MessageSender messageSender = new MessageSender(restClient);
 
-        server.expect(ExpectedCount.once(), requestTo(convertToUri(host.address) + "/messages"))
+        server.expect(ExpectedCount.once(), requestTo(convertToUri(host) + "/messages"))
             .andExpect(method(HttpMethod.POST))
             .andRespond(
                 withSuccess()
@@ -86,10 +85,11 @@ class MessageSenderTest {
         assertThat(response.acknowledgement()).isEqualTo(Acknowledgement.ACK);
     }
 
-    private static URI convertToUri(InetAddress address) {
+    private static URI convertToUri(Host host) {
         return UriComponentsBuilder.newInstance()
-            .scheme("https")
-            .host(address.getHostAddress())
+            .scheme(host.protocol.getScheme())
+            .host(host.address.getHostAddress())
+            .port(host.port)
             .build()
             .toUri();
     }
