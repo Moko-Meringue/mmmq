@@ -6,10 +6,12 @@ import java.util.Objects;
 
 public class Host {
 
+    final WebProtocol protocol;
     final InetAddress address;
     final int port;
 
-    public Host(String address, int port) {
+    public Host(String webProtocol, String address, int port) {
+        this.protocol = WebProtocol.fromScheme(webProtocol);
         this.address = convertAddress(address);
         this.port = port;
     }

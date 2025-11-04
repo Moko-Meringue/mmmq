@@ -28,7 +28,7 @@ public class MessageSenderFactory {
 
     private static URI convertToUri(Host host) {
         return UriComponentsBuilder.newInstance()
-            .scheme("https")
+            .scheme("http")
             .host(host.address.getHostAddress())
             .port(host.port)
             .build()

@@ -35,7 +35,7 @@ public class SubscriberConfigurationTest {
 
         @Bean("testSubscriber")
         public Subscriber subscriber() {
-            return new Subscriber.Builder("name", "localhost", 8080)
+            return new Subscriber.Builder("name", "http", "localhost", 8080)
                 .subscribes("topic1", "topic2")
                 .build();
         }

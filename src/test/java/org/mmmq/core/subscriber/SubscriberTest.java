@@ -25,7 +25,7 @@ class SubscriberTest {
 
     @BeforeEach
     void setUp() {
-        subscriber = new Subscriber.Builder("name", "localhost", 8080).build();
+        subscriber = new Subscriber.Builder("name", "http", "localhost", 8080).build();
     }
 
     @Test

@@ -105,9 +105,9 @@ public class Subscriber {
         private Set<Topic> subscribed = new HashSet<>();
         private ThreadPoolExecutor threadPoolExecutor = DEFAULT_THREAD_POOL_EXECUTOR;
 
-        public Builder(String name, String hostName, int port) {
+        public Builder(String name, String webProtocol, String hostName, int port) {
             this.name = name;
-            this.host = new Host(hostName, port);
+            this.host = new Host(webProtocol, hostName, port);
         }
 
         public Builder subscribes(String... topics) {
