@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mmmq.core.TestConfiguration;
 import org.mmmq.core.subscriber.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,8 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {TestConfiguration.class, SubscriberConfigurationTest.SubscriberConfiguration.class}
+    webEnvironment = SpringBootTest.WebEnvironment.NONE,
+    classes = SubscriberConfigurationTest.SubscriberConfiguration.class
 )
 public class SubscriberConfigurationTest {
 
