@@ -1,4 +1,4 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
 import java.util.Arrays;
 

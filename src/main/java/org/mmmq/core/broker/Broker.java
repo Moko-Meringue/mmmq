@@ -2,22 +2,22 @@ package org.mmmq.core.broker;
 
 import java.util.List;
 
+import org.mmmq.core.dispatcher.MessageDispatcher;
 import org.mmmq.core.message.Message;
-import org.mmmq.core.subscriber.Subscriber;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Broker {
 
-    final List<Subscriber> subscribers;
+    final List<MessageDispatcher> messageDispatchers;
 
-    public Broker(List<Subscriber> subscribers) {
-        this.subscribers = subscribers;
+    public Broker(List<MessageDispatcher> messageDispatchers) {
+        this.messageDispatchers = messageDispatchers;
     }
 
     public void push(Message message) {
-        subscribers.stream()
-                .filter(subscriber -> subscriber.isSubscribing(message.topic()))
-                .forEach(subscriber -> subscriber.push(message));
+        messageDispatchers.stream()
+                .filter(messageDispatcher -> messageDispatcher.isSubscribing(message.topic()))
+                .forEach(messageDispatcher -> messageDispatcher.push(message));
     }
 }

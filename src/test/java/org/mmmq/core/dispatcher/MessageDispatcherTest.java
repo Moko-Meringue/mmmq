@@ -1,4 +1,4 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -19,22 +19,22 @@ import org.junit.jupiter.api.Test;
 import org.mmmq.core.message.Message;
 import org.mmmq.core.message.Topic;
 
-class SubscriberTest {
+class MessageDispatcherTest {
 
-    Subscriber subscriber;
+    MessageDispatcher messageDispatcher;
 
     @BeforeEach
     void setUp() {
-        subscriber = new Subscriber.Builder("name", "http", "localhost", 8080).build();
+        messageDispatcher = new MessageDispatcher.Builder("name", "http", "localhost", 8080).build();
     }
 
     @Test
     @DisplayName("push 테스트")
     void pushTest() {
         Message message = new Message("test", Map.of("key", "value"));
-        subscriber.push(message);
+        messageDispatcher.push(message);
 
-        assertThat(subscriber.messageQueue).contains(Map.entry(message, 0));
+        assertThat(messageDispatcher.messageQueue).contains(Map.entry(message, 0));
     }
 
     @Test
@@ -53,7 +53,7 @@ class SubscriberTest {
                     startLatch.await();
                     for (int j = 0; j < messagesPerThread; j++) {
                         Message message = new Message("topic", Map.of("id", threadId, "msg", j));
-                        subscriber.push(message);
+                        messageDispatcher.push(message);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -68,7 +68,7 @@ class SubscriberTest {
         executor.shutdown();
 
         int expectedCount = threadCount * messagesPerThread;
-        int actualCount = subscriber.messageQueue.size();
+        int actualCount = messageDispatcher.messageQueue.size();
 
         assertThat(actualCount).isEqualTo(expectedCount);
     }
@@ -76,15 +76,15 @@ class SubscriberTest {
     @Test
     @DisplayName("ACK가 오면 메시지를 재전송하지 않는다.")
     void ackTest() throws Exception {
-        subscriber.startWorker();
+        messageDispatcher.startWorker();
         MessageSender messageSender = mock(MessageSender.class);
         Message message = new Message("test", Map.of("key", "value"));
-        when(messageSender.send(message)).thenReturn(new SubscriberResponse(Acknowledgement.ACK));
-        Field filed = Subscriber.class.getDeclaredField("messageSender");
+        when(messageSender.send(message)).thenReturn(new DispatchResponse(Acknowledgement.ACK));
+        Field filed = MessageDispatcher.class.getDeclaredField("messageSender");
         filed.setAccessible(true);
-        filed.set(subscriber, messageSender);
+        filed.set(messageDispatcher, messageSender);
 
-        subscriber.push(message);
+        messageDispatcher.push(message);
 
         Thread.sleep(500L);
         verify(messageSender, times(1)).send(message);
@@ -93,32 +93,32 @@ class SubscriberTest {
     @Test
     @DisplayName("NAK가 오면 메시지를 3회 재전송한다.")
     void nakTest() throws Exception {
-        subscriber.startWorker();
+        messageDispatcher.startWorker();
         MessageSender messageSender = mock(MessageSender.class);
         Message message = new Message("test", Map.of("key", "value"));
-        when(messageSender.send(message)).thenReturn(new SubscriberResponse(Acknowledgement.NAK));
-        Field filed = Subscriber.class.getDeclaredField("messageSender");
+        when(messageSender.send(message)).thenReturn(new DispatchResponse(Acknowledgement.NAK));
+        Field filed = MessageDispatcher.class.getDeclaredField("messageSender");
         filed.setAccessible(true);
-        filed.set(subscriber, messageSender);
+        filed.set(messageDispatcher, messageSender);
 
-        subscriber.push(message);
+        messageDispatcher.push(message);
 
         Thread.sleep(1000L);
-        verify(messageSender, times(1 + Subscriber.MAX_RETRY_COUNT)).send(message);
+        verify(messageSender, times(1 + MessageDispatcher.MAX_RETRY_COUNT)).send(message);
     }
 
     @Test
     @DisplayName("isSubscribing 테스트")
     void isSubscribingTest() {
-        subscriber.topics.addAll(
+        messageDispatcher.topics.addAll(
             Set.of(
                 new Topic("topic1"),
                 new Topic("topic2")
             )
         );
 
-        assertThat(subscriber.isSubscribing("topic1")).isTrue();
-        assertThat(subscriber.isSubscribing("topic2")).isTrue();
-        assertThat(subscriber.isSubscribing("topic3")).isFalse();
+        assertThat(messageDispatcher.isSubscribing("topic1")).isTrue();
+        assertThat(messageDispatcher.isSubscribing("topic2")).isTrue();
+        assertThat(messageDispatcher.isSubscribing("topic3")).isFalse();
     }
 }

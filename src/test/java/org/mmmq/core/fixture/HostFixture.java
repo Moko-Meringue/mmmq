@@ -2,7 +2,7 @@ package org.mmmq.core.fixture;
 
 import java.net.InetAddress;
 
-import org.mmmq.core.subscriber.Host;
+import org.mmmq.core.dispatcher.Host;
 
 public class HostFixture {
 

@@ -1,4 +1,4 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
 import org.mmmq.core.message.Message;
 import org.springframework.http.MediaType;
@@ -12,13 +12,13 @@ public class MessageSender {
         this.restClient = restClient;
     }
 
-    public SubscriberResponse send(Message message) {
+    public DispatchResponse send(Message message) {
         return restClient.post()
             .uri("/messages")
             .contentType(MediaType.APPLICATION_JSON)
             .body(message)
             .retrieve()
-            .toEntity(SubscriberResponse.class)
+            .toEntity(DispatchResponse.class)
             .getBody();
     }
 }

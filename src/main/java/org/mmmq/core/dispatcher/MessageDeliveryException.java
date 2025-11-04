@@ -1,4 +1,4 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
 public class MessageDeliveryException extends RuntimeException {
     

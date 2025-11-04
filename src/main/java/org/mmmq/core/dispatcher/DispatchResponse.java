@@ -1,6 +1,6 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
-public record SubscriberResponse(
+public record DispatchResponse(
         Acknowledgement acknowledgement
 ) {
 

@@ -1,4 +1,4 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -76,11 +76,11 @@ class MessageSenderTest {
             .andExpect(method(HttpMethod.POST))
             .andRespond(
                 withSuccess()
-                    .body(objectMapper.writeValueAsBytes(new SubscriberResponse(Acknowledgement.ACK)))
+                    .body(objectMapper.writeValueAsBytes(new DispatchResponse(Acknowledgement.ACK)))
                     .contentType(MediaType.APPLICATION_JSON)
             );
 
-        SubscriberResponse response = messageSender.send(new Message("topic", Map.of("key", "value")));
+        DispatchResponse response = messageSender.send(new Message("topic", Map.of("key", "value")));
 
         assertThat(response.acknowledgement()).isEqualTo(Acknowledgement.ACK);
     }

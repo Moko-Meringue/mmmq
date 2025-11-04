@@ -1,4 +1,4 @@
-package org.mmmq.core.subscriber;
+package org.mmmq.core.dispatcher;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.annotation.PostConstruct;
 
-public class Subscriber {
+public class MessageDispatcher {
 
-    private static final Logger log = LoggerFactory.getLogger(Subscriber.class);
+    private static final Logger log = LoggerFactory.getLogger(MessageDispatcher.class);
     static final int MAX_RETRY_COUNT = 3;
 
     final String name;
@@ -28,7 +28,7 @@ public class Subscriber {
     final ThreadPoolExecutor threadPoolExecutor;
     final Thread worker;
 
-    public Subscriber(
+    public MessageDispatcher(
         String name,
         Host host,
         Set<Topic> topics,
@@ -75,7 +75,7 @@ public class Subscriber {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Subscriber that)) {
+        if (!(o instanceof MessageDispatcher that)) {
             return false;
         }
         return Objects.equals(name, that.name) && Objects.equals(host, that.host);
@@ -110,7 +110,7 @@ public class Subscriber {
             this.host = new Host(webProtocol, hostName, port);
         }
 
-        public Builder subscribes(String... topics) {
+        public Builder withTopics(String... topics) {
             for (String topic : topics) {
                 this.subscribed.add(new Topic(topic));
             }
@@ -122,8 +122,8 @@ public class Subscriber {
             return this;
         }
 
-        public Subscriber build() {
-            return new Subscriber(
+        public MessageDispatcher build() {
+            return new MessageDispatcher(
                 name,
                 host,
                 subscribed,
