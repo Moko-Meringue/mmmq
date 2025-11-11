@@ -1,0 +1,8 @@
+dependencies {
+    testImplementation 'org.assertj:assertj-core'
+}
+
+tasks.named('jar') {
+    enabled = true
+    archiveClassifier = ''
+}
