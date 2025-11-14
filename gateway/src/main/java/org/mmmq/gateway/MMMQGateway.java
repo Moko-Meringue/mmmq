@@ -1,5 +1,7 @@
 package org.mmmq.gateway;
 
+import org.mmmq.core.acknowledgement.Acknowledgement;
+import org.mmmq.core.acknowledgement.GatewayAcknowledgement;
 import org.mmmq.core.message.Message;
 import org.mmmq.gateway.broker.Broker;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,8 @@ public class MMMQGateway {
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<Void> postMessage(@RequestBody Message message) {
+    public ResponseEntity<GatewayAcknowledgement> postMessage(@RequestBody Message message) {
         broker.push(message);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new GatewayAcknowledgement(Acknowledgement.ACK));
     }
 }
