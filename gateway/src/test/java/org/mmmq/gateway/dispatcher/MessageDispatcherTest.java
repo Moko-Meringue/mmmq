@@ -3,7 +3,7 @@ package org.mmmq.gateway.dispatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mmmq.core.message.Acknowledgement;
+import org.mmmq.core.acknowledgement.Acknowledgement;
 import org.mmmq.core.message.Message;
 import org.mmmq.core.message.Topic;
 

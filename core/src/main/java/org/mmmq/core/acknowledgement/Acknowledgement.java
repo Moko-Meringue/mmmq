@@ -1,4 +1,4 @@
-package org.mmmq.core.message;
+package org.mmmq.core.acknowledgement;
 
 public enum Acknowledgement {
     ACK("ACK"),
