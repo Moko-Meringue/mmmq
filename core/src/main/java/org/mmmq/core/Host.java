@@ -36,16 +36,8 @@ public class Host {
         }
     }
 
-    public WebProtocol getProtocol() {
-        return protocol;
-    }
-
-    public InetAddress getAddress() {
-        return address;
-    }
-
-    public int getPort() {
-        return port;
+    public String toUri() {
+        return String.format("%s://%s:%d", protocol.getScheme(), address.getHostAddress(), port);
     }
 
     @Override

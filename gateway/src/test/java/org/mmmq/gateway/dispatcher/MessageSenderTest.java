@@ -1,7 +1,12 @@
 package org.mmmq.gateway.dispatcher;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 class MessageSenderTest {
 
@@ -31,22 +31,12 @@ class MessageSenderTest {
     ObjectMapper objectMapper;
     Host host;
 
-    private static String convertToUri(Host host) {
-        return UriComponentsBuilder.newInstance()
-                .scheme(host.getProtocol().getScheme())
-                .host(host.getAddress().getHostAddress())
-                .port(host.getPort())
-                .build()
-                .toUri()
-                .toString();
-    }
-
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
         host = HostFixture.localhost();
         RestClient tempClient = RestClient.builder()
-                .baseUrl(convertToUri(host))
+                .baseUrl(host.toUri())
                 .defaultStatusHandler(
                         status -> status.is4xxClientError() || status.is5xxServerError(),
                         (request, response) -> {
@@ -68,7 +58,7 @@ class MessageSenderTest {
         MessageSender messageSender = new MessageSender(restClient);
         Host host = HostFixture.localhost();
 
-        server.expect(ExpectedCount.once(), requestTo(convertToUri(host) + "/messages"))
+        server.expect(ExpectedCount.once(), requestTo(host.toUri() + "/messages"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess(
                         objectMapper.writeValueAsString(new DispatchResponse(Acknowledgement.ACK)),
@@ -85,7 +75,7 @@ class MessageSenderTest {
     void receiveResponseTest() throws JsonProcessingException {
         MessageSender messageSender = new MessageSender(restClient);
 
-        server.expect(ExpectedCount.once(), requestTo(convertToUri(host) + "/messages"))
+        server.expect(ExpectedCount.once(), requestTo(host.toUri() + "/messages"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(
                         withSuccess()

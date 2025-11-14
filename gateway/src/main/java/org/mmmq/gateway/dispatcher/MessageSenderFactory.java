@@ -2,7 +2,6 @@ package org.mmmq.gateway.dispatcher;
 
 import org.mmmq.core.Host;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
 public class MessageSenderFactory {
 
@@ -12,7 +11,7 @@ public class MessageSenderFactory {
 
     private static RestClient createRestClient(Host host) {
         return RestClient.builder()
-                .baseUrl(convertToUri(host))
+                .baseUrl(host.toUri())
                 .defaultStatusHandler(
                         status -> status.is4xxClientError() || status.is5xxServerError(),
                         (request, response) -> {
@@ -23,15 +22,5 @@ public class MessageSenderFactory {
                         }
                 )
                 .build();
-    }
-
-    private static String convertToUri(Host host) {
-        return UriComponentsBuilder.newInstance()
-                .scheme(host.getProtocol().getScheme())
-                .host(host.getAddress().getHostAddress())
-                .port(host.getPort())
-                .build()
-                .toUri()
-                .toString();
     }
 }
