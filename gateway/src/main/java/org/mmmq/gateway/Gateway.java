@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MMMQGateway {
+public class Gateway {
 
     final Broker broker;
 
-    public MMMQGateway(Broker broker) {
+    public Gateway(Broker broker) {
         this.broker = broker;
     }
 

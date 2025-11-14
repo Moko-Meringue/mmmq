@@ -21,9 +21,9 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = MMMQGatewayTest.TestConfiguration.class
+        classes = GatewayTest.TestConfiguration.class
 )
-class MMMQGatewayTest {
+class GatewayTest {
 
     @LocalServerPort
     int port;
@@ -54,9 +54,9 @@ class MMMQGatewayTest {
     void forwardToBrokerTest() {
         Message message = new Message("topic", Map.of("key", "value"));
         Broker broker = mock(Broker.class);
-        MMMQGateway MMMQGateway = new MMMQGateway(broker);
+        Gateway Gateway = new Gateway(broker);
 
-        MMMQGateway.postMessage(message);
+        Gateway.postMessage(message);
 
         verify(broker).push(message);
     }
