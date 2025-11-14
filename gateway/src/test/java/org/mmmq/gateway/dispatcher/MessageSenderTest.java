@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mmmq.core.Host;
 import org.mmmq.core.acknowledgement.Acknowledgement;
 import org.mmmq.core.message.Message;
 import org.mmmq.gateway.fixture.HostFixture;
@@ -32,9 +33,9 @@ class MessageSenderTest {
 
     private static String convertToUri(Host host) {
         return UriComponentsBuilder.newInstance()
-                .scheme(host.protocol.getScheme())
-                .host(host.address.getHostAddress())
-                .port(host.port)
+                .scheme(host.getProtocol().getScheme())
+                .host(host.getAddress().getHostAddress())
+                .port(host.getPort())
                 .build()
                 .toUri()
                 .toString();

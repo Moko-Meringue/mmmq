@@ -1,4 +1,4 @@
-package org.mmmq.gateway.dispatcher;
+package org.mmmq.core;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,6 +34,18 @@ public class Host {
         } catch (Exception ignored) {
             return false;
         }
+    }
+
+    public WebProtocol getProtocol() {
+        return protocol;
+    }
+
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     @Override

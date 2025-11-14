@@ -1,5 +1,6 @@
 package org.mmmq.gateway.dispatcher;
 
+import org.mmmq.core.Host;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,9 +27,9 @@ public class MessageSenderFactory {
 
     private static String convertToUri(Host host) {
         return UriComponentsBuilder.newInstance()
-                .scheme(host.protocol.getScheme())
-                .host(host.address.getHostAddress())
-                .port(host.port)
+                .scheme(host.getProtocol().getScheme())
+                .host(host.getAddress().getHostAddress())
+                .port(host.getPort())
                 .build()
                 .toUri()
                 .toString();

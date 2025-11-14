@@ -1,6 +1,6 @@
 package org.mmmq.gateway.fixture;
 
-import org.mmmq.gateway.dispatcher.Host;
+import org.mmmq.core.Host;
 
 import java.net.InetAddress;
 

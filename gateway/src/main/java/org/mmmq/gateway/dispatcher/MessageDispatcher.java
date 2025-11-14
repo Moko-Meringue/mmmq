@@ -1,6 +1,7 @@
 package org.mmmq.gateway.dispatcher;
 
 import jakarta.annotation.PostConstruct;
+import org.mmmq.core.Host;
 import org.mmmq.core.message.Message;
 import org.mmmq.core.message.Topic;
 import org.slf4j.Logger;

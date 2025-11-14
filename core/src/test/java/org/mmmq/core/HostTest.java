@@ -1,4 +1,4 @@
-package org.mmmq.gateway.dispatcher;
+package org.mmmq.core;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

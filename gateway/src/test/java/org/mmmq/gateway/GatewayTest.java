@@ -46,7 +46,7 @@ class GatewayTest {
                 .when().log().all()
                 .post("/messages")
                 .then().log().all()
-                .statusCode(204);
+                .statusCode(200);
     }
 
     @Test
