@@ -1,6 +1,7 @@
 package org.mmmq.gateway.dispatcher;
 
 import org.mmmq.core.Host;
+import org.mmmq.core.message.MessageDeliveryException;
 import org.springframework.web.client.RestClient;
 
 public class MessageSenderFactory {

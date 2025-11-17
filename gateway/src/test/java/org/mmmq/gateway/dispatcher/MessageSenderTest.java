@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mmmq.core.Host;
 import org.mmmq.core.acknowledgement.Acknowledgement;
 import org.mmmq.core.message.Message;
+import org.mmmq.core.message.MessageDeliveryException;
 import org.mmmq.gateway.fixture.HostFixture;
 import org.mmmq.gateway.fixture.MockRestServiceServerFixture;
 import org.springframework.http.HttpMethod;
