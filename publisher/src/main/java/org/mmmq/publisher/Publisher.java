@@ -31,4 +31,26 @@ public class Publisher {
             throw new MessagePublishException("Failed to publish message", e);
         }
     }
+
+    public static PublisherBuilder builder(Host host) {
+        return new PublisherBuilder(host);
+    }
+
+    public static class PublisherBuilder {
+        private final Host host;
+        private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
+
+        public PublisherBuilder(Host host) {
+            this.host = host;
+        }
+
+        public PublisherBuilder maxRetryCount(int maxRetryCount) {
+            this.maxRetryCount = maxRetryCount;
+            return this;
+        }
+
+        public Publisher build() {
+            return new Publisher(host, maxRetryCount);
+        }
+    }
 }
